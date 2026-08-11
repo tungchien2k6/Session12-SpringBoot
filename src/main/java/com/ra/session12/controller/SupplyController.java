@@ -120,4 +120,19 @@ public class SupplyController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PatchMapping("/{id}/import")
+    public ResponseEntity<ApiResponse<Supply>> importSupply(@PathVariable Long id,
+                                                            @Valid @RequestBody StockChangeDTO dto) {
+        Supply supply = supplyService.importSupply(id, dto);
+
+        ApiResponse<Supply> response = ApiResponse.<Supply>builder()
+                .status("success")
+                .code(HttpStatus.OK.value())
+                .message("Nhập kho thành công")
+                .data(supply)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

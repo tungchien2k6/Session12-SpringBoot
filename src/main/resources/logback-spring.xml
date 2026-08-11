@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- File log chính, dùng chung cho toàn hệ thống -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/supply_web_service.log</file>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/supply_web_service-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>2MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- File log riêng cho nhập kho -->
+    <appender name="HISTORY_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/history.log</file>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/history-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>2MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Logger riêng, chỉ ghi vào history.log, KHÔNG lan lên root -->
+    <logger name="HISTORY_LOGGER" level="INFO" additivity="false">
+        <appender-ref ref="HISTORY_FILE"/>
+    </logger>
+
+    <logger name="org.hibernate" level="DEBUG"/>
+    <logger name="com.ra.session12.service" level="DEBUG"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

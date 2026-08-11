@@ -14,4 +14,5 @@ public interface SupplyService {
     List<Supply> getAllSupplies();
     List<Supply> searchSuppliesByName(String name);
     Supply exportSupply(Long id, StockChangeDTO dto);
+    Supply importSupply(Long id, StockChangeDTO dto);
 }

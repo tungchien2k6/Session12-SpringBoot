@@ -14,7 +14,8 @@ import com.ra.session12.service.SupplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @Slf4j
@@ -115,6 +116,30 @@ public class SupplyServiceImpl implements SupplyService {
         transactionRepository.save(transaction);
 
         log.info("Xuất kho thành công ID {}: số lượng {}, tồn còn lại {}", id, dto.getAmount(), saved.getQuantity());
+
+        return saved;
+    }
+
+    private static final Logger historyLogger = LoggerFactory.getLogger("HISTORY_LOGGER");
+
+    @Override
+    public Supply importSupply(Long id, StockChangeDTO dto) {
+        Supply supply = supplyRepository.findById(id)
+                .filter(s -> !s.getIsDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy vật tư với id: " + id));
+
+        int oldQuantity = supply.getQuantity();
+        supply.setQuantity(oldQuantity + dto.getAmount());
+        Supply saved = supplyRepository.save(supply);
+
+        Transaction transaction = Transaction.builder()
+                .supply(saved)
+                .type(TransactionType.IMPORT)
+                .amount(dto.getAmount())
+                .build();
+        transactionRepository.save(transaction);
+
+        historyLogger.info("Nhập kho ID {}, số lượng [+{}], tồn cũ {}", id, dto.getAmount(), oldQuantity);
 
         return saved;
     }
