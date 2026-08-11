@@ -11,4 +11,5 @@ public interface SupplyService {
     Supply updateSupply(Long id, SupplyUpdateDTO dto);
     void deleteSupply(Long id);
     List<Supply> getAllSupplies();
+    List<Supply> searchSuppliesByName(String name);
 }

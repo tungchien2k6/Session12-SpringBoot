@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface SupplyRepository extends JpaRepository<Supply, Long> {
     List<Supply> findByIsDeletedFalse();
+    List<Supply> findByNameContainingIgnoreCaseAndIsDeletedFalse(String name);
 }

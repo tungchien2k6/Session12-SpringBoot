@@ -90,4 +90,18 @@ public class SupplyController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<Supply>>> searchSupplies(@RequestParam("name") String name) {
+        List<Supply> supplies = supplyService.searchSuppliesByName(name);
+
+        ApiResponse<List<Supply>> response = ApiResponse.<List<Supply>>builder()
+                .status("success")
+                .code(HttpStatus.OK.value())
+                .message("Tìm kiếm hoàn tất")
+                .data(supplies)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK); // luôn 200, kể cả khi rỗng
+    }
 }

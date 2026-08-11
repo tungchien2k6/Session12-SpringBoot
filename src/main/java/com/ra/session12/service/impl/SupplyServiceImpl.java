@@ -74,4 +74,15 @@ public class SupplyServiceImpl implements SupplyService {
         log.debug("Đã truy vấn được {} bản ghi vật tư đang hoạt động", supplies.size());
         return supplies;
     }
+
+    @Override
+    public List<Supply> searchSuppliesByName(String name) {
+        List<Supply> supplies = supplyRepository.findByNameContainingIgnoreCaseAndIsDeletedFalse(name);
+
+        if (supplies.isEmpty()) {
+            log.info("Không tìm thấy vật tư nào khớp với từ khóa: {}", name);
+        }
+
+        return supplies;
+    }
 }
