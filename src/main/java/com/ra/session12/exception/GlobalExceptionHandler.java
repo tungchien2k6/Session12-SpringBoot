@@ -19,4 +19,15 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ApiResponse<Object>> handleInsufficientStockException(InsufficientStockException e) {
+        ApiResponse<Object> response = ApiResponse.builder()
+                .status("error")
+                .code(HttpStatus.BAD_REQUEST.value())
+                .message(e.getMessage())
+                .data(null)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }

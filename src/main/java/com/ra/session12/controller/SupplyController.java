@@ -1,5 +1,6 @@
 package com.ra.session12.controller;
 
+import com.ra.session12.dto.request.StockChangeDTO;
 import com.ra.session12.dto.request.SupplyCreateDTO;
 import com.ra.session12.dto.request.SupplyUpdateDTO;
 import com.ra.session12.dto.response.ApiResponse;
@@ -103,5 +104,20 @@ public class SupplyController {
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK); // luôn 200, kể cả khi rỗng
+    }
+
+    @PatchMapping("/{id}/export")
+    public ResponseEntity<ApiResponse<Supply>> exportSupply(@PathVariable Long id,
+                                                            @Valid @RequestBody StockChangeDTO dto) {
+        Supply supply = supplyService.exportSupply(id, dto);
+
+        ApiResponse<Supply> response = ApiResponse.<Supply>builder()
+                .status("success")
+                .code(HttpStatus.OK.value())
+                .message("Xuất kho thành công")
+                .data(supply)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

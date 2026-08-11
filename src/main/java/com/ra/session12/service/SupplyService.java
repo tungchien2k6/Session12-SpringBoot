@@ -1,5 +1,6 @@
 package com.ra.session12.service;
 
+import com.ra.session12.dto.request.StockChangeDTO;
 import com.ra.session12.dto.request.SupplyCreateDTO;
 import com.ra.session12.dto.request.SupplyUpdateDTO;
 import com.ra.session12.model.entity.Supply;
@@ -12,4 +13,5 @@ public interface SupplyService {
     void deleteSupply(Long id);
     List<Supply> getAllSupplies();
     List<Supply> searchSuppliesByName(String name);
+    Supply exportSupply(Long id, StockChangeDTO dto);
 }

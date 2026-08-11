@@ -1,10 +1,15 @@
 package com.ra.session12.service.impl;
 
+import com.ra.session12.dto.request.StockChangeDTO;
 import com.ra.session12.dto.request.SupplyCreateDTO;
 import com.ra.session12.dto.request.SupplyUpdateDTO;
+import com.ra.session12.exception.InsufficientStockException;
 import com.ra.session12.exception.ResourceNotFoundException;
 import com.ra.session12.model.entity.Supply;
+import com.ra.session12.model.entity.Transaction;
+import com.ra.session12.model.entity.TransactionType;
 import com.ra.session12.repository.SupplyRepository;
+import com.ra.session12.repository.TransactionRepository;
 import com.ra.session12.service.SupplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,5 +89,33 @@ public class SupplyServiceImpl implements SupplyService {
         }
 
         return supplies;
+    }
+
+    private final TransactionRepository transactionRepository; // thêm field này vào constructor injection
+
+    @Override
+    public Supply exportSupply(Long id, StockChangeDTO dto) {
+        Supply supply = supplyRepository.findById(id)
+                .filter(s -> !s.getIsDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy vật tư với id: " + id));
+
+        if (supply.getQuantity() < dto.getAmount()) {
+            log.error("Thất bại khi xuất kho ID {}: Yêu cầu {}, hiện có {}", id, dto.getAmount(), supply.getQuantity());
+            throw new InsufficientStockException("Số lượng tồn kho không đủ để xuất");
+        }
+
+        supply.setQuantity(supply.getQuantity() - dto.getAmount());
+        Supply saved = supplyRepository.save(supply);
+
+        Transaction transaction = Transaction.builder()
+                .supply(saved)
+                .type(TransactionType.EXPORT)
+                .amount(dto.getAmount())
+                .build();
+        transactionRepository.save(transaction);
+
+        log.info("Xuất kho thành công ID {}: số lượng {}, tồn còn lại {}", id, dto.getAmount(), saved.getQuantity());
+
+        return saved;
     }
 }
