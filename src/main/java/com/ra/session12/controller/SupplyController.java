@@ -69,4 +69,10 @@ public class SupplyController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSupply(@PathVariable Long id) {
+        supplyService.deleteSupply(id);
+        return ResponseEntity.noContent().build();
+    }
 }

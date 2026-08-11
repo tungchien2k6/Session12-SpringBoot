@@ -53,4 +53,16 @@ public class SupplyServiceImpl implements SupplyService {
         log.info("Đã cập nhật vật tư ID: {}", id);
         return saved;
     }
+
+    @Override
+    public void deleteSupply(Long id) {
+        Supply supply = supplyRepository.findById(id)
+                .filter(s -> !s.getIsDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy vật tư với id: " + id));
+
+        supply.setIsDeleted(true);
+        supplyRepository.save(supply);
+
+        log.info("Đã xóa mềm vật tư ID: {}", id);
+    }
 }

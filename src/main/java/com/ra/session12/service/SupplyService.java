@@ -7,4 +7,5 @@ import com.ra.session12.model.entity.Supply;
 public interface SupplyService {
     Supply createSupply(SupplyCreateDTO dto);
     Supply updateSupply(Long id, SupplyUpdateDTO dto);
+    void deleteSupply(Long id);
 }
