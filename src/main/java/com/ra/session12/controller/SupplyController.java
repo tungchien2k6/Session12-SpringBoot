@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -74,5 +75,19 @@ public class SupplyController {
     public ResponseEntity<Void> deleteSupply(@PathVariable Long id) {
         supplyService.deleteSupply(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<Supply>>> getAllSupplies() {
+        List<Supply> supplies = supplyService.getAllSupplies();
+
+        ApiResponse<List<Supply>> response = ApiResponse.<List<Supply>>builder()
+                .status("success")
+                .code(HttpStatus.OK.value())
+                .message("Lấy danh sách vật tư thành công")
+                .data(supplies)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

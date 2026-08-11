@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -64,5 +66,12 @@ public class SupplyServiceImpl implements SupplyService {
         supplyRepository.save(supply);
 
         log.info("Đã xóa mềm vật tư ID: {}", id);
+    }
+
+    @Override
+    public List<Supply> getAllSupplies() {
+        List<Supply> supplies = supplyRepository.findByIsDeletedFalse();
+        log.debug("Đã truy vấn được {} bản ghi vật tư đang hoạt động", supplies.size());
+        return supplies;
     }
 }
